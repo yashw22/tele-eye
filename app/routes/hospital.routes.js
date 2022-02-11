@@ -6,6 +6,6 @@ module.exports = function (app) {
         next();
     });
 
-    app.post("/hospital/addhospital", controller.addHospital);
     app.get("/hospital/gethospitals", controller.getHospitals);
+    app.post("/hospital/addhospital", controller.addHospital);
 }

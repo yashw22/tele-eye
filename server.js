@@ -20,8 +20,12 @@ db.mongoose
     });
 
 
-require("./app/routes/hospital.routes")(app);
+app.get("/beds", function (req, res) {
+    res.sendFile(__dirname + "/public/beds.html");
+});
 
+require("./app/routes/hospital.routes")(app);
+require("./app/routes/bed.routes")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

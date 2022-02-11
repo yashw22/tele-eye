@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
-const Hospital = mongoose.model(
-    "Hospital",
+const Device = mongoose.model(
+    "Device",
     new mongoose.Schema(
         {
-            hospName: String,
-            hospLocation: String,
+            deviceName: String,
+            deviceURL: String,
             status: { type: String, enum: ["active", "inactive"] }
         },
         { timestamps: true }
     )
-);
+)
 
-module.exports = Hospital;
+module.exports = Device;
