@@ -11,9 +11,16 @@ const Bed = mongoose.model(
             },
             devices: [
                 {
+                    deviceName: String,
+                    deviceURL: String,
+                    status: { type: String, enum: ["active", "inactive"] }
+                }
+                /*
+                {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Device"
                 }
+                */
             ],
             status: { type: String, enum: ["active", "inactive"] }
         },

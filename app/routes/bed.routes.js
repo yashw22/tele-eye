@@ -7,5 +7,5 @@ module.exports = function (app) {
     });
 
     app.get("/getdata", controller.getBeds);
-    app.post("/putdata", controller.addBeds);
+    app.post("/putdata", controller.addBed);
 }

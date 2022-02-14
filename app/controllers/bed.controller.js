@@ -1,80 +1,42 @@
-
 const db = require("../models");
 const Bed = db.bed;
-//const Device = db.device;
+const Device = db.device;
 
 const fs = require("fs");
 
-function jsonReader(filePath, cb) {
-    fs.readFile(filePath, (err, fileData) => {
-        if (err) {
-            return cb && cb(err);
-        }
-        try {
-            const object = JSON.parse(fileData);
-            return cb && cb(null, object);
-        } catch (err) {
-            return cb && cb(err);
-        }
+exports.addBed = (req, res) => {
+    const bed = new Bed({
+        bedName: req.body.bedName,
+        devices: req.body.devices,
+        status: req.body.status
     });
-}
-
-exports.addBeds = (req, res) => {
-
-    var name = req.body.bedName,
-        devices = req.body.devices;
-    console.log(name, devices);
-
-    jsonReader("./data.json", (err, dataval) => {
-        if (err) {
-            console.log("Error reading file:", err);
-            return;
-        }
-
-        let ins = {};
-        ins.name = name;
-        ins.devices = devices;
-        dataval.push(ins);
-
-        fs.writeFile("", JSON.stringify(dataval), err => {
-            if (err) console.log("Error writing file:", err);
-            res.send("update success!");
-        });
-    });
-
-
-
-    /*
-    const hospital = new Hospital({
-        hospName: req.body.hospName,
-        hospLocation: req.body.hospLocation,
-    });
-    hospital.save((err, user) => {
+    bed.save((err, bed_res) => {
         if (err) { res.status(500).send({ message: err }); return; }
-        res.send("New hospital inserted:\n" + JSON.stringify(req.body));
+        /*if(req.body.devices) {
+            let deviceIDs = [];
+            let device;
+            for(var i=0; i<req.body.devices.length; i++){
+                device = new Device({
+                    deviceName: req.body.devices[i].deviceName,
+                    deviceURL: req.body.devices[i].deviceURL,
+                    status: req.body.devices[i].status,
+                });
+                device.save((err,device_res)=>{
+
+                });
+            }
+        }*/
+        res.status(200).send("New bed inserted:\n" + req.body);
     });
-    */
+
 
 };
 
 exports.getBeds = (req, res) => {
-
-    jsonReader("./data.json", (err, dataval) => {
-        if (err) {
-            console.log("Error reading file:", err);
-            return;
-        }
-        res.send(dataval);
-    });
-
-
-    /*
-    Hospital.find({})
-        .exec(function (err, hospital) {
+    Bed.find({ hospID: req.body.hospID })
+        .exec(function (err, beds) {
             if (err) { res.status(500).send({ message: err }); return; }
-            console.log(hospital);
-            res.status(200).send(hospital);
+            console.log(beds);
+            res.status(200).send(beds);
         });
-
-    */
 }

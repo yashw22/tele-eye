@@ -11,7 +11,7 @@ function fetchdataJSON() {
             for (var i = 0; i < data.length; i++) {
                 console.log("hi");
                 var d1 = $("<div>").addClass("col-sm-4").appendTo(dd);
-                var d2 = $("<div>").addClass("card h-100").appendTo(d1);
+                var d2 = $("<div>").addClass("card h-100").attr("id", data[i]._id).appendTo(d1);
                 var d3 = $("<div>").addClass("text-center").appendTo(d2);
                 var d4 = $("<div>").addClass("card-body").appendTo(d2);
                 $("<h3>").html(data[i].hospName).appendTo(d3);
