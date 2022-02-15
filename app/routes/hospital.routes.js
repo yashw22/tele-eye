@@ -1,4 +1,4 @@
-const controller = require("../controllers/hospital.controller")
+const controller = require("../controllers/hospital.controller");
 const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {

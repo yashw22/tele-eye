@@ -1,52 +1,58 @@
-let data = fetchdataJSON();
+const params = new URLSearchParams(window.location.search);
+const hospID = params.get("hospID");
+$("#page_header").html(params.get("hospName"));
+
+fetchdataJSON();
 
 var bedName = document.getElementById("bedName");
-var deviceUrl = document.getElementById("urldata");
-var deviceName = document.getElementById("devicename");
+var bedStatus = document.getElementById("bedStatus");
+var devices = []
+var navbar = document.getElementById("navbar");
+var navpanel = document.getElementById("navpanel");
 
-var deviceId = 0;
-var deviceData = {}
-var tbl = document.getElementById("tableval")
-localStorage.setItem("devices", "[]");
+var table = document.getElementById("tableval");
+var deviceName = document.getElementById("deviceName");
+var deviceURL = document.getElementById("deviceURL");
+var deviceStatus = document.getElementById("deviceStatus");
+
 
 $("#addDevice").on("click", function () {
-    var devices = JSON.parse(localStorage.getItem("devices"));
-    deviceData = {
-        "deviceUrl": deviceUrl.value,
-        "deviceName": deviceName.value
+    var deviceData = {
+        "deviceName": deviceName.value,
+        "deviceURL": deviceURL.value,
+        "deviceStatus": deviceStatus.value
     };
-
-    deviceUrl.value = "";
     deviceName.value = "";
+    deviceURL.value = "";
+    deviceStatus.value = "";
     devices.push(deviceData);
-    localStorage.setItem("devices", JSON.stringify(devices));
-    console.log(deviceData)
-    var tb = "";
-    for (var i = 0; i < devices.length; i++) {
-        tb += "<tr><td>" + devices[i].deviceUrl + "</td><td>" + devices[i].deviceName + "</td><td></td></tr>";
-    }
-    $(tbl).html(tb);
+    //console.log(deviceData)
 
+    var tbRow = "";
+    for (var i = 0; i < devices.length; i++) {
+        tbRow += "<tr><td>" + devices[i].deviceName + "</td><td>" + devices[i].deviceStatus + "</td><td>" + devices[i].deviceURL + "</td></tr>";
+    }
+    $(table).html(tbRow);
 });
 
 $("#submitdata").on("click", function () {
     var dataAjax = {}
     dataAjax.bedName = bedName.value;
-
-    var devices = JSON.parse(localStorage.getItem("devices"));
+    dataAjax.hospID = hospID;
+    dataAjax.bedStatus = bedStatus.value;
     dataAjax.devices = devices;
+    //console.log(dataAjax);
 
-    console.log(dataAjax);
-
-    if (bedName.value === "") {
-        alert("please enter Bed name");
+    if (bedName.value === "" || bedStatus.value === "") {
+        alert("Please enter Bed details.");
         return false;
     }
-    else if (devices === "") {
-        alert("please enter device data");
+    else if (!devices.length) {
+        alert("please enter device details");
         return false;
     }
     else {
+        console.log(dataAjax);
         $.ajax({
             type: 'POST',
             url: "http://localhost:8080/bed/addbed",
@@ -54,12 +60,15 @@ $("#submitdata").on("click", function () {
             dataType: "text",
             success: function (resultData) {
                 bedName.value = "";
-                devices.value = "";
+                devices = [];
+                bedStatus = "";
+                table.remove();
+
+                navbar.html("");
+                navpanel.html("");
+
                 $('#modal').modal('hide');
-                deviceData = [];
-                alert(resultData);
-                localStorage.setItem("devices", "[]");
-                $(tbl).html('');
+                //alert(resultData);
                 fetchdataJSON();
             }
         });
@@ -67,46 +76,36 @@ $("#submitdata").on("click", function () {
     }
 })
 
-$(function () {
-    $(document.body).delegate(".delRowBtn", "click", function () {
-        $(this).closest("tr").remove();
-    });
-
-});
-
 function fetchdataJSON() {
-    const response = fetch("http://localhost:8080/bed/getbeds")
+
+    const response = fetch("http://localhost:8080/bed/getbeds?hospID=" + hospID)
         .then(response => response.json())
         .then(data => {
             //console.log(data);
-            var d1 = $("<div>").addClass("d-flex align-items-start").appendTo("#addhere");
-            var d2 = $("<div>").addClass("nav flex-column nav-pills me-3").attr({ "role": "tablist", "aria-orientation": "vertical" }).appendTo(d1);
-            var d3 = $("<div>").addClass("tab-content").appendTo(d1);
-
             for (var i = 0; i < data.length; i++) {
-                var act1 = "";
-                var act2 = "";
+                var act1 = "", act2 = "";
                 if (i == 0) {
                     act1 = "active";
                     act2 = "show active";
                 }
-                var b1 = $("<button>")
-                    .addClass("nav-link " + act1).attr({ "id": "url-tab-" + i, "data-bs-toggle": "pill", "data-bs-target": "#url-" + i, "type": "button", "role": "tab", "aria-controls": "url-" + i, "aria-selected": "true" })
-                    .html(data[i].name)
-                    .appendTo(d2);
+                $("<button>")
+                    .addClass("nav-link " + act1)
+                    .attr({ "id": "url-tab-" + i, "data-bs-toggle": "pill", "data-bs-target": "#url-" + i, "type": "button", "role": "tab", "aria-controls": "url-" + i, "aria-selected": "true" })
+                    .html(data[i].bedName)
+                    .appendTo("#navbar");
 
                 var i1 = $("<div>")
-                    .addClass("tab-pane fade " + act2).attr({ "id": "url-" + i, "role": "tabpanel", "aria-labelledby": "url-tab-" + i })
-                    .appendTo(d3);
+                    .addClass("tab-pane fade " + act2)
+                    .attr({ "id": "url-" + i, "role": "tabpanel", "aria-labelledby": "url-tab-" + i })
+                    .appendTo("#navpanel");
 
-                var devicesdata = data[i].devices;
+                var devicesData = data[i].devices;
                 var dd0 = $("<div>").addClass("row").appendTo(i1);
-                for (var j = 0; j < devicesdata.length; j++) {
+                for (var j = 0; j < devicesData.length; j++) {
                     var dd1 = $("<div>").addClass("col-md-6").appendTo(dd0);
-                    $("<h4>").html(devicesdata[j].deviceName).appendTo(dd1);
-                    $("<iframe>").attr({ "src": devicesdata[j].deviceUrl, "width": "700", "height": "550" }).appendTo(dd1);
+                    $("<h4>").html(devicesData[j].deviceName).appendTo(dd1);
+                    $("<iframe>").attr({ "src": devicesData[j].deviceURL, "width": "700", "height": "550" }).appendTo(dd1);
                 }
-
             }
 
         })

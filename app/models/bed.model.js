@@ -9,6 +9,11 @@ const Bed = mongoose.model(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Hospital"
             },
+            bedStatus: {
+                type: String,
+                enum: ["active", "inactive"],
+                //default: "inactive"
+            },
             devices: [
                 {
                     deviceName: String,
@@ -26,13 +31,8 @@ const Bed = mongoose.model(
                 }
                 */
             ],
-            bedStatus: {
-                type: String,
-                enum: ["active", "inactive"],
-                //default: "inactive"
-            }
         },
-        //{ timestamps: true }
+        { timestamps: true }
     )
 )
 

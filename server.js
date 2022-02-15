@@ -5,6 +5,7 @@ const path = require('path');
 require("dotenv").config();
 
 const db = require("./app/models");
+const { authJwt } = require("./app/middlewares");
 
 const app = express();
 app.use(cors({ origin: "http://localhost:8081" }));
@@ -17,7 +18,6 @@ app.use(
         httpOnly: true
     })
 );
-app.use(express.static(path.resolve(__dirname, "public")));
 
 db.mongoose
     .connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -27,9 +27,16 @@ db.mongoose
         process.exit();
     });
 
+app.use(express.static(path.resolve(__dirname, "public")));
 
-app.get("/beds", function (req, res) {
-    res.sendFile(__dirname + "/public/beds.html");
+app.get("/", (req, res) => {
+    res.redirect("/hospitals");
+});
+app.get("/hospitals", authJwt.verifyToken, function (req, res) {
+    res.sendFile(__dirname + "/public/hospitals.html");
+});
+app.get("/login", function (req, res) {
+    res.sendFile(__dirname + "/public/login.html");
 });
 
 require('./app/routes/auth.routes')(app);

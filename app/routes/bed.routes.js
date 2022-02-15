@@ -1,4 +1,4 @@
-const controller = require("../controllers/bed.controller")
+const controller = require("../controllers/bed.controller");
 const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {
@@ -12,4 +12,4 @@ module.exports = function (app) {
 
     //app.get("/bed/getbeds", [authJwt.verifyToken], controller.getBeds);
     //app.post("/bed/addbed", [authJwt.verifyToken], controller.addBed);
-}
+};
