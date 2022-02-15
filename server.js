@@ -29,7 +29,7 @@ db.mongoose
 
 app.use(express.static(path.resolve(__dirname, "public")));
 
-app.get("/", (req, res) => {
+app.get("/", function (req, res) {
     res.redirect("/hospitals");
 });
 app.get("/hospitals", authJwt.verifyToken, function (req, res) {
@@ -42,6 +42,11 @@ app.get("/login", function (req, res) {
 require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);
 require("./app/routes/bed.routes")(app);
+
+app.all("*", (req, res) => {
+    //res.redirect("/hospitals");
+    res.json({ message: "404 - PAGE NOT FOUND" });
+});
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

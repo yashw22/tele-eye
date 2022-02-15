@@ -76,6 +76,19 @@ $("#submitdata").on("click", function () {
     }
 })
 
+$("#signoutbtn").on("click", function (event) {
+    event.preventDefault();
+    $.ajax({
+        type: 'POST',
+        url: "http://localhost:8080/auth/signout",
+        success: function (res) {
+            window.location.replace("http://localhost:8080/");
+        }
+    });
+
+
+});
+
 function fetchdataJSON() {
 
     const response = fetch("http://localhost:8080/bed/getbeds?hospID=" + hospID)
