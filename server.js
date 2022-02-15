@@ -1,14 +1,22 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const cors = require("cors");
+const cookieSession = require("cookie-session");
 const path = require('path');
 require("dotenv").config();
 
 const db = require("./app/models");
 
 const app = express();
+app.use(cors({ origin: "http://localhost:8081" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(
+    cookieSession({
+        name: "session",
+        secret: "COOKIE_SECRET",
+        httpOnly: true
+    })
+);
 app.use(express.static(path.resolve(__dirname, "public")));
 
 db.mongoose
@@ -24,6 +32,7 @@ app.get("/beds", function (req, res) {
     res.sendFile(__dirname + "/public/beds.html");
 });
 
+require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);
 require("./app/routes/bed.routes")(app);
 

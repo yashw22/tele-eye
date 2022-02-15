@@ -26,17 +26,19 @@ exports.addBed = (req, res) => {
                 });
             }
         }*/
-        res.status(200).send("New bed inserted:\n" + req.body);
+        console.log("New bed inserted: " + req.body.bedName);
+        res.status(200).send("New bed inserted.");
     });
 
 
 };
 
 exports.getBeds = (req, res) => {
-    Bed.find({ hospID: req.body.hospID })
+    //Bed.find({ hospID: req.body.hospID })
+    Bed.find()
         .exec(function (err, beds) {
             if (err) { res.status(500).send({ message: err }); return; }
-            console.log(beds);
+            console.log("Beds List sent.");
             res.status(200).send(beds);
         });
 }

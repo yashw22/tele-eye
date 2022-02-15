@@ -1,4 +1,5 @@
 const controller = require("../controllers/bed.controller")
+const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -6,6 +7,9 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/getdata", controller.getBeds);
-    app.post("/putdata", controller.addBed);
+    app.get("/bed/getbeds", controller.getBeds);
+    app.post("/bed/addbed", controller.addBed);
+
+    //app.get("/bed/getbeds", [authJwt.verifyToken], controller.getBeds);
+    //app.post("/bed/addbed", [authJwt.verifyToken], controller.addBed);
 }

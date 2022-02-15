@@ -13,7 +13,11 @@ const Bed = mongoose.model(
                 {
                     deviceName: String,
                     deviceURL: String,
-                    status: { type: String, enum: ["active", "inactive"] }
+                    deviceStatus: {
+                        type: String,
+                        enum: ["active", "inactive"],
+                        //default: "inactive"
+                    }
                 }
                 /*
                 {
@@ -22,9 +26,13 @@ const Bed = mongoose.model(
                 }
                 */
             ],
-            status: { type: String, enum: ["active", "inactive"] }
+            bedStatus: {
+                type: String,
+                enum: ["active", "inactive"],
+                //default: "inactive"
+            }
         },
-        { timestamps: true }
+        //{ timestamps: true }
     )
 )
 

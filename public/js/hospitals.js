@@ -1,42 +1,17 @@
-function fetchdataJSON() {
-    console.log("From style.js");
+fetchdataJSON();
 
-    const response = fetch("http://localhost:8080/hospital/gethospitals")
-        .then(response => response.json())
-        .then(data => {
-            console.log("after fetch", data);
-            $("#hospitalslist").empty();
-
-            var dd = $("<div>").addClass("row gy-4").appendTo("#hospitalslist");
-            for (var i = 0; i < data.length; i++) {
-                console.log("hi");
-                var d1 = $("<div>").addClass("col-sm-4").appendTo(dd);
-                var d2 = $("<div>").addClass("card h-100").attr("id", data[i]._id).appendTo(d1);
-                var d3 = $("<div>").addClass("text-center").appendTo(d2);
-                var d4 = $("<div>").addClass("card-body").appendTo(d2);
-                $("<h3>").html(data[i].hospName).appendTo(d3);
-                $("<p>").html(data[i].hospLocation).appendTo(d4);
-                $("<a>").attr({ "href": data[i].hospUrl }).html(data[i].hospUrl).appendTo(d4);
-
-            }
-        })
-    return response;
-}
-
-//fetchdataJSON();
 var hospName = document.getElementById("hospName");
 var hospLocation = document.getElementById("hospLocation");
-var hospUrl = document.getElementById("hospURL");
+var hospStatus = document.getElementById("hospStatus");
 
 $("#submitdata").on("click", function () {
     var dataAjax = {};
     dataAjax.hospName = hospName.value;
     dataAjax.hospLocation = hospLocation.value;
-    dataAjax.hospUrl = hospUrl.value;
-    console.log(dataAjax);
+    dataAjax.hospStatus = hospStatus.value;
+    //console.log(dataAjax);
 
-
-    if (hospName.value === "" || hospLocation.value === "" || hospUrl.value === "") {
+    if (hospName.value === "" || hospLocation.value === "" || hospStatus.value === "") {
         alert('Please enter all fields');
         return false;
     }
@@ -51,7 +26,7 @@ $("#submitdata").on("click", function () {
                 //$(".container-fluid").css({ display: "block" });
                 hospName.value = "";
                 hospLocation.value = "";
-                hospUrl.value = "";
+                hospStatus.value = "";
                 fetchdataJSON();
                 // $('#modal').modal('hide');
             }
@@ -60,5 +35,27 @@ $("#submitdata").on("click", function () {
 
 });
 
+function fetchdataJSON() {
+    //console.log("From style.js");
 
+    const response = fetch("http://localhost:8080/hospital/gethospitals")
+        .then(response => response.json())
+        .then(data => {
+            $("#hospitalsList").empty();
 
+            var dd = $("<div>").addClass("row gy-4").appendTo("#hospitalsList");
+            for (var i = 0; i < data.length; i++) {
+                console.log("hi");
+                var d1 = $("<div>").addClass("col-sm-4").appendTo(dd);
+                var d2 = $("<div>").addClass("card h-100").appendTo(d1).attr("id", data[i]._id);
+                var d3 = $("<div>").addClass("text-center").appendTo(d2);
+                var d4 = $("<div>").addClass("card-body").appendTo(d2);
+                $("<h3>").html(data[i].hospName).appendTo(d3);
+                $("<p>").html("Location: " + data[i].hospLocation).appendTo(d4);
+                $("<p>").html("Status: " + data[i].hospStatus).appendTo(d4);
+                $("<a>").html("ext link.").appendTo(d4).attr({ "href": "/beds" });
+
+            }
+        })
+    return response;
+}

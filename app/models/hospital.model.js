@@ -6,7 +6,11 @@ const Hospital = mongoose.model(
         {
             hospName: String,
             hospLocation: String,
-            status: { type: String, enum: ["active", "inactive"] }
+            hospStatus: {
+                type: String,
+                enum: ["active", "inactive"],
+                default: "inactive"
+            }
         },
         { timestamps: true }
     )
