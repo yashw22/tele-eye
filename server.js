@@ -43,10 +43,12 @@ require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);
 require("./app/routes/bed.routes")(app);
 
+/*
 app.all("*", (req, res) => {
     //res.redirect("/hospitals");
     res.json({ message: "404 - PAGE NOT FOUND" });
 });
+*/
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

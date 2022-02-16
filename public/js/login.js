@@ -1,3 +1,5 @@
+import { HOST, PORT } from "./config.js";
+
 var username = document.getElementById("username");
 var password = document.getElementById("password");
 
@@ -17,11 +19,11 @@ $("#loginbtn").on("click", function (event) {
     else {
         $.ajax({
             type: 'POST',
-            url: "http://localhost:8080/auth/signin",
+            url: HOST + ":" + PORT + "/auth/signin",
             data: loginData,
             dataType: "text",
             success: function (res) {
-                window.location.replace("http://localhost:8080/hospitals");
+                window.location.replace(HOST + ":" + PORT + "/hospitals");
             },
             error: (err) => {
                 //username.value = "";
