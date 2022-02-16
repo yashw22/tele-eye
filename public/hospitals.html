@@ -40,10 +40,23 @@
                 <input type="location" class="form-control" id="hospLocation" placeholder="Location">
                 <label for="hospLocation">Hospital Location</label>
               </div>
-              <div class="form-floating">
+              <label for="pwd" class="form-label">Device Status:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="hospStatus">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Active
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flexRadioDefault" id="hospStatus" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Inactive
+                </label>
+              </div>
+              <!-- <div class="form-floating">
                 <input type="text" class="form-control" id="hospStatus" placeholder="Status">
                 <label for="hospStatus">Hospital Status</label>
-              </div>
+              </div> -->
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
