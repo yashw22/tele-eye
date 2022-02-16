@@ -7,9 +7,9 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/bed/getbeds", controller.getBeds);
-    app.post("/bed/addbed", controller.addBed);
+    //app.get("/bed/getbeds", controller.getBeds);
+    //app.post("/bed/addbed", controller.addBed);
 
-    //app.get("/bed/getbeds", [authJwt.verifyToken], controller.getBeds);
-    //app.post("/bed/addbed", [authJwt.verifyToken], controller.addBed);
+    app.get("/bed/getbeds", [authJwt.verifyToken], controller.getBeds);
+    app.post("/bed/addbed", [authJwt.verifyToken], controller.addBed);
 };
