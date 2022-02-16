@@ -43,7 +43,21 @@
                 <label for="pwd" class="form-label">Add Device:</label>
                 <input type="name" class="form-control" id="deviceName" placeholder="Enter Device Name" name="deviceName"><br>
                 <input type="url" class="form-control" id="deviceURL" placeholder="Enter URL" name="deviceURL"><br>
-                <input type="text" class="form-control" id="deviceStatus" placeholder="Enter Device Status" name="deviceStatus"><br>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="deviceStatus">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Active
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="deviceStatus" checked>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Inactive
+                  </label>
+                </div>
+
+
+              <!--     <input type="text" class="form-control" id="deviceStatus" placeholder="Enter Device Status" name="deviceStatus"><br>-->
               </div>
 
               <div>
