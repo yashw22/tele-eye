@@ -1,3 +1,5 @@
+import { HOST, PORT } from "./config.js";
+
 fetchdataJSON();
 
 var hospName = document.getElementById("hospName");
@@ -18,7 +20,7 @@ $("#submitdata").on("click", function () {
     else {
         $.ajax({
             type: 'POST',
-            url: "http://localhost:8080/hospital/addhospital",
+            url: HOST + ":" + PORT + "/hospital/addhospital",
             data: dataAjax,
             dataType: "text",
             success: function (resultData) {
@@ -39,9 +41,9 @@ $("#signoutbtn").on("click", function (event) {
     event.preventDefault();
     $.ajax({
         type: 'POST',
-        url: "http://localhost:8080/auth/signout",
+        url: HOST + ":" + PORT + "/auth/signout",
         success: function (res) {
-            window.location.replace("http://localhost:8080/");
+            window.location.replace(HOST + ":" + PORT);
         }
     });
 
@@ -49,12 +51,10 @@ $("#signoutbtn").on("click", function (event) {
 });
 
 function fetchdataJSON() {
-
-    const response = fetch("http://localhost:8080/hospital/gethospitals")
+    const response = fetch(HOST + ":" + PORT + "/hospital/gethospitals")
         .then(response => response.json())
         .then(data => {
             $("#hospitalsList").empty();
-
             var dd = $("<div>").addClass("row gy-4").appendTo("#hospitalsList");
             for (var i = 0; i < data.length; i++) {
                 var d1 = $("<div>").addClass("col-sm-4").appendTo(dd);

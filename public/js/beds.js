@@ -1,3 +1,5 @@
+import { HOST, PORT } from "./config.js";
+
 const params = new URLSearchParams(window.location.search);
 const hospID = params.get("hospID");
 $("#page_header").html(params.get("hospName"));
@@ -14,7 +16,6 @@ var table = document.getElementById("tableval");
 var deviceName = document.getElementById("deviceName");
 var deviceURL = document.getElementById("deviceURL");
 var deviceStatus = document.getElementById("deviceStatus");
-
 
 $("#addDevice").on("click", function () {
     var deviceData = {
@@ -55,7 +56,7 @@ $("#submitdata").on("click", function () {
         console.log(dataAjax);
         $.ajax({
             type: 'POST',
-            url: "http://localhost:8080/bed/addbed",
+            url: HOST + ":" + PORT + "/bed/addbed",
             data: dataAjax,
             dataType: "text",
             success: function (resultData) {
@@ -80,9 +81,9 @@ $("#signoutbtn").on("click", function (event) {
     event.preventDefault();
     $.ajax({
         type: 'POST',
-        url: "http://localhost:8080/auth/signout",
+        url: HOST + ":" + PORT + "/auth/signout",
         success: function (res) {
-            window.location.replace("http://localhost:8080/");
+            window.location.replace(HOST + ":" + PORT);
         }
     });
 
@@ -91,7 +92,7 @@ $("#signoutbtn").on("click", function (event) {
 
 function fetchdataJSON() {
 
-    const response = fetch("http://localhost:8080/bed/getbeds?hospID=" + hospID)
+    const response = fetch(HOST + ":" + PORT + "/bed/getbeds?hospID=" + hospID)
         .then(response => response.json())
         .then(data => {
             //console.log(data);
