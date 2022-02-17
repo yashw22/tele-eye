@@ -5,7 +5,9 @@ const PM = mongoose.model(
     new mongoose.Schema({
         directory: String,
         date: Date,
-    })
+    },
+        { timestamps: true }
+    )
 );
 
 module.exports = PM;

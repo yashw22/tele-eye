@@ -7,6 +7,6 @@ module.exports = function (app) {
         next();
     });
 
-    //app.post("/upload", controller.esp32Upload);
     app.post("/devices/esp32/upload", controller.esp32Upload);
+    app.get("/devices/pm/getimages", authJwt.verifyToken, controller.getPMImages);
 }

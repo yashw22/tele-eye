@@ -7,10 +7,9 @@ const db = require("./app/models");
 const { authJwt } = require("./app/middlewares");
 const fileUpload = require('express-fileupload');
 
-
 const app = express();
 app.use(express.static(path.resolve(__dirname, "public")));
-app.use(cors({ origin: "http://localhost:8081" }));
+app.use(cors({ origin: "http://localhost:8080" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -30,7 +29,6 @@ db.mongoose
         console.error("MongoDB connection error", err);
         process.exit();
     });
-
 
 app.get("/", function (req, res) {
     res.redirect("/hospitals");

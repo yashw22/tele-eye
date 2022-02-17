@@ -3,7 +3,7 @@ import { HOST, PORT } from "./config.js";
 var username = document.getElementById("username");
 var password = document.getElementById("password");
 
-console.log("Login page displayed.");
+//console.log("Login page displayed.");
 
 $("#loginbtn").on("click", function (event) {
     event.preventDefault();
