@@ -7,9 +7,6 @@ module.exports = function (app) {
         next();
     });
 
-    //app.get("/hospital/gethospitals", controller.getHospitals);
-    //app.post("/hospital/addhospital", controller.addHospital);
-
     app.get("/hospital/gethospitals", [authJwt.verifyToken], controller.getHospitals);
     app.post("/hospital/addhospital", [authJwt.verifyToken], controller.addHospital);
 }

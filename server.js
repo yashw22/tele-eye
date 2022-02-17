@@ -3,11 +3,13 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const path = require('path');
 require("dotenv").config();
-
 const db = require("./app/models");
 const { authJwt } = require("./app/middlewares");
+const fileUpload = require('express-fileupload');
+
 
 const app = express();
+app.use(express.static(path.resolve(__dirname, "public")));
 app.use(cors({ origin: "http://localhost:8081" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,6 +20,8 @@ app.use(
         httpOnly: true
     })
 );
+app.use(fileUpload({ useTempFiles: true, tempFileDir: '/tmp/', debug: false }));
+
 
 db.mongoose
     .connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -27,7 +31,6 @@ db.mongoose
         process.exit();
     });
 
-app.use(express.static(path.resolve(__dirname, "public")));
 
 app.get("/", function (req, res) {
     res.redirect("/hospitals");
@@ -42,6 +45,7 @@ app.get("/login", function (req, res) {
 require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);
 require("./app/routes/bed.routes")(app);
+require("./app/routes/device.routes")(app);
 
 /*
 app.all("*", (req, res) => {

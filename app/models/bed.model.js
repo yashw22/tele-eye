@@ -24,12 +24,6 @@ const Bed = mongoose.model(
                         //default: "inactive"
                     }
                 }
-                /*
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Device"
-                }
-                */
             ],
         },
         { timestamps: true }

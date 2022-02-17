@@ -4,16 +4,22 @@ fetchdataJSON();
 
 var hospName = document.getElementById("hospName");
 var hospLocation = document.getElementById("hospLocation");
-var hospStatus = document.getElementById("hospStatus");
+var hospStatus = document.getElementsByName("hospStatus");
 
 $("#submitdata").on("click", function () {
-    var dataAjax = {};
-    dataAjax.hospName = hospName.value;
-    dataAjax.hospLocation = hospLocation.value;
-    dataAjax.hospStatus = hospStatus.value;
-    //console.log(dataAjax);
+    var i, hospData = {
+        "hospName": hospName.value,
+        "hospLocation": hospLocation.value,
+        "hospStatus": "",
+    }
+    for (i = 0; i < hospStatus.length; i++) {
+        if (hospStatus[i].checked) {
+            hospData.hospStatus = hospStatus[i].value;
+            break;
+        }
+    }
 
-    if (hospName.value === "" || hospLocation.value === "" || hospStatus.value === "") {
+    if (hospName.value === "" || hospLocation.value === "" || hospData.hospStatus === "") {
         alert('Please enter all fields');
         return false;
     }
@@ -21,16 +27,14 @@ $("#submitdata").on("click", function () {
         $.ajax({
             type: 'POST',
             url: HOST + ":" + PORT + "/hospital/addhospital",
-            data: dataAjax,
+            data: hospData,
             dataType: "text",
             success: function (resultData) {
                 $("#staticBackdrop").modal('hide');
-                //$(".container-fluid").css({ display: "block" });
                 hospName.value = "";
                 hospLocation.value = "";
-                hospStatus.value = "";
+                $('input[name="hospStatus"]').prop('checked', false);
                 fetchdataJSON();
-                // $('#modal').modal('hide');
             }
         });
     }
@@ -66,8 +70,6 @@ function fetchdataJSON() {
                 $("<p>").html("Status: " + data[i].hospStatus).appendTo(d4);
                 $("<a>").html("ext link.").appendTo(d4)
                     .attr({ "href": "/beds.html?hospName=" + data[i].hospName + "&hospID=" + data[i]._id });
-
             }
         })
-    return response;
 }

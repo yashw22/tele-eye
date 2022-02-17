@@ -1,4 +1,4 @@
-const controller = require("../controllers/bed.controller");
+const controller = require("../controllers/device.controller");
 const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {
@@ -7,6 +7,6 @@ module.exports = function (app) {
         next();
     });
 
-    app.get("/bed/getbeds", [authJwt.verifyToken], controller.getBeds);
-    app.post("/bed/addbed", [authJwt.verifyToken], controller.addBed);
-};
+    //app.post("/upload", controller.esp32Upload);
+    app.post("/devices/esp32/upload", controller.esp32Upload);
+}

@@ -1,6 +1,7 @@
 const db = require("../models");
 const Hospital = db.hospital;
 
+
 exports.addHospital = (req, res) => {
     const hospital = new Hospital({
         hospName: req.body.hospName,

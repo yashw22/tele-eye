@@ -6,6 +6,7 @@ module.exports = function (app) {
         res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
         next();
     });
+    
     app.post("/auth/signup", [verifySignUp.checkDuplicateUsernameOrEmail], controller.signup);
     app.post("/auth/signin", controller.signin);
     app.post("/auth/signout", controller.signout);
