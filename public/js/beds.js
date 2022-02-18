@@ -76,7 +76,7 @@ $("#submitdata").on("click", function () {
                 bedName.value = "";
                 $('input[name="bedStatus"]').prop('checked', false);
                 devices = [];
-                table.remove();
+                table.innerHTML = " ";
                 $('#modal').modal('hide');
                 clearActiveNav();
                 addNewBedToHTML(bedData, true, totalBeds);
@@ -121,11 +121,21 @@ function addNewBedToHTML(data, currDisplay, idx) {
         .addClass("tab-pane fade " + act2)
         .attr({ "id": "url-" + idx, "role": "tabpanel", "aria-labelledby": "url-tab-" + idx })
         .appendTo("#navpanel");
+
     var dd0 = $("<div>").addClass("row").appendTo(disp);
     for (var j = 0; j < devicesData.length; j++) {
         var dd1 = $("<div>").addClass("col-md-6").appendTo(dd0);
-        var dd2 = $("<h4>").html(devicesData[j].deviceName).appendTo(dd1);
-        $("<span>").addClass("badge bg-secondary").html(devicesData[j].deviceStatus).appendTo(dd2);
+        var dd2 = $("<h4>").html(devicesData[j].deviceName + " ").appendTo(dd1);
+        var dd3 = $("<span>").html(devicesData[j].deviceStatus).appendTo(dd2);
+        if (devicesData[j].deviceStatus === "active") dd3.addClass("badge bg-success");
+        else dd3.addClass("badge bg-danger");
+
+        if (devicesData[j].deviceName == "PM") {
+            var atag = $("<a>").appendTo(dd1)
+                .attr({ "href": "/carousel.html?deviceID=" + devicesData[j].deviceID + "&deviceName=" + devicesData[j].deviceName });
+            $("<img>").attr({ "src": "assets/pm.jpg", "width": "400", "height": "300" }).appendTo(atag);
+            continue;
+        }
         $("<iframe>").attr({ "src": devicesData[j].deviceID, "width": "400", "height": "300" }).appendTo(dd1);
     }
 }

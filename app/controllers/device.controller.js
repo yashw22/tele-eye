@@ -17,18 +17,19 @@ exports.esp32Upload = (req, res) => {
         addZero(date.getMinutes()) + "-" + addZero(date.getSeconds());
 
     sampleFile = req.files.profile_pic;
-    uploadPath = "\\esp32Uploads\\" + formatatedDate + ".jpg";
+    uploadPath = "\\esp32Uploads\\" + req.deviceNo + "__" + formatatedDate + ".jpg";
+
 
     sampleFile.mv(process.cwd() + "\\public" + uploadPath, (err) => {
         if (err) return res.status(500).send(err);
         const pm = new PM({
-            deviceID: "test1",
+            deviceID: "esp32-" + req.deviceNo,
             directory: uploadPath,
             date: date,
         });
         pm.save((err, pm_res) => {
             if (err) { res.status(500).send({ message: err }); return; }
-            console.log("Image uploaded. Path: " + uploadPath);
+            console.log("Image uploaded from esp32 - " + req.deviceNo + ". Path: " + uploadPath);
             res.status(200).send("Image uploaded. Path: " + uploadPath);
         });
     });

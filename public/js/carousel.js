@@ -4,11 +4,15 @@ var carouselBody = document.getElementById("carousel-inner");
 var carouselIndicators = document.getElementById("carousel-indicators");
 // var progBar = document.getElementById("carousel-progress-bar");
 
+const params = new URLSearchParams(window.location.search);
+const deviceID = params.get("deviceID")
+$("#pageTitle").html(params.get("deviceName"));
+
 fetchData()
 
 function fetchData() {
     var ajaxData = {
-        "deviceID": "test1",
+        "deviceID": deviceID,
         "date": new Date(),
         "limit": 10
     };
