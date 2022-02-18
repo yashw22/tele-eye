@@ -13,13 +13,13 @@ var devices = []
 
 var table = document.getElementById("tableval");
 var deviceName = document.getElementById("deviceName");
-var deviceURL = document.getElementById("deviceURL");
+var deviceID = document.getElementById("deviceID");
 var deviceStatus = document.getElementsByName("deviceStatus");
 
 $("#addDevice").on("click", function () {
     var deviceData = {
         "deviceName": deviceName.value,
-        "deviceURL": deviceURL.value,
+        "deviceID": deviceID.value,
         "deviceStatus": "",
     };
     for (let i = 0; i < deviceStatus.length; i++) {
@@ -28,18 +28,18 @@ $("#addDevice").on("click", function () {
             break;
         }
     }
-    if (deviceName.value === "" || deviceURL.value === "" || deviceData.deviceStatus === "") {
+    if (deviceName.value === "" || deviceID.value === "" || deviceData.deviceStatus === "") {
         alert('Please enter all fields');
         return false;
     }
     deviceName.value = "";
-    deviceURL.value = "";
+    deviceID.value = "";
     $('input[name="deviceStatus"]').prop('checked', false);
     devices.push(deviceData);
 
     var tbRow = "";
     for (var i = 0; i < devices.length; i++) {
-        tbRow += "<tr><td>" + devices[i].deviceName + "</td><td>" + devices[i].deviceStatus + "</td><td>" + devices[i].deviceURL + "</td></tr>";
+        tbRow += "<tr><td>" + devices[i].deviceName + "</td><td>" + devices[i].deviceStatus + "</td><td>" + devices[i].deviceID + "</td></tr>";
     }
     $(table).html(tbRow);
 });
@@ -126,7 +126,7 @@ function addNewBedToHTML(data, currDisplay, idx) {
         var dd1 = $("<div>").addClass("col-md-6").appendTo(dd0);
         var dd2 = $("<h4>").html(devicesData[j].deviceName).appendTo(dd1);
         $("<span>").addClass("badge bg-secondary").html(devicesData[j].deviceStatus).appendTo(dd2);
-        $("<iframe>").attr({ "src": devicesData[j].deviceURL, "width": "400", "height": "300" }).appendTo(dd1);
+        $("<iframe>").attr({ "src": devicesData[j].deviceID, "width": "400", "height": "300" }).appendTo(dd1);
     }
 }
 

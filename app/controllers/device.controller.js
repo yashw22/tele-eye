@@ -22,6 +22,7 @@ exports.esp32Upload = (req, res) => {
     sampleFile.mv(process.cwd() + "\\public" + uploadPath, (err) => {
         if (err) return res.status(500).send(err);
         const pm = new PM({
+            deviceID: "test1",
             directory: uploadPath,
             date: date,
         });
@@ -34,25 +35,11 @@ exports.esp32Upload = (req, res) => {
 };
 
 exports.getPMImages = (req, res) => {
-    PM.find({}, ["directory"], { sort: { "date": -1 }, limit: 1, skip: req.body.idx },
+    var reqDate = new Date(req.body.date);
+    PM.find({ deviceID: req.body.deviceID, date: { '$lte': reqDate } }, [], { sort: { "date": -1 }, limit: req.body.limit },
+        // PM.find({}, [], { sort: { "date": -1 }, limit: req.body.limit, skip: req.body.skip },
         (err, pms) => {
             if (err) { res.status(500).send({ message: err }); return; }
-            res.status(200).send(pms[0].directory);
-
-            /*
-            //console.log(pms[0].directory);
-            //res.sendFile(pms[0].directory);
-
-            let formData = new FormData();
-            formData.append('field', 'my value');
-            formData.append('file', fs.createReadStream(pms[0].directory));
-            //console.log(fs.createReadStream("Testing"));
-            //console.log(fs.createReadStream(pms[0].directory));
-
-            formData.append("img1", fs.createReadStream(pms[0].directory));
-            res.setHeader('x-Content-Type', 'multipart/form-data; boundary=' + formData._boundary);
-            res.setHeader('Content-Type', 'image/jpeg');
-            formData.pipe(res);
-            */
+            res.status(200).send(pms);
         });
 };
