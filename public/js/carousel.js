@@ -9,6 +9,13 @@ const deviceID = params.get("deviceID")
 $("#pageTitle").html(params.get("deviceName"));
 
 fetchData()
+setInterval(invokeEvery30Sec, 30000);
+
+async function invokeEvery30Sec() {
+    $(carouselBody).html("");
+    $(carouselIndicators).html("");
+    fetchData();
+ }
 
 function fetchData() {
     var ajaxData = {
@@ -53,6 +60,5 @@ function createCarousel(data) {
             d1.addClass("active");
             indicator.addClass("active").attr({ "aria-current": "true" });
         }
-
     }
 }

@@ -46,11 +46,29 @@
                     <input class="form-check-input" type="radio" name="bedStatus" value="inactive" id="bedStatusInactive">
                     <label class="form-check-label" for="bedStatusInactive">Inactive</label>
                   </div>
-                </div><br>
+                </div>
+                <hr /><br>
 
                 <div class="form-group">
                   <label for="deviceName" class="form-label">Add Devices</label>
-                  <input type="name" class="form-control" id="deviceName" placeholder="Enter Device Name" name="deviceName"><br>
+
+                  <div class="dropdown" style="border: 1px solid #d3d3d3; border-radius: 5px">
+                    <button id="deviceName" value="" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%; ">
+                      Select Device
+                    </button>
+                    <script>
+                      function changeBtnVal(choice) {
+                        $("#deviceName").html(choice).attr({ "value": choice });
+                      }
+                    </script>
+                    <ul class="dropdown-menu" aria-labelledby="deviceName" style="width: 100%;">
+                      <li><span class="dropdown-item" onclick="changeBtnVal('Patient Monitor')">Patient Monitor</span></li>
+                      <li><span class="dropdown-item" onclick="changeBtnVal('Syringe Pump')">Syringe Pump</span></li>
+                      <li><span class="dropdown-item" onclick="changeBtnVal('Ventilator')">Ventilator</span></li>
+                    </ul>
+                  </div> <br>
+
+                  <!-- <input type="name" class="form-control" id="deviceName" placeholder="Enter Device Name" name="deviceName"><br> -->
                   <input type="url" class="form-control" id="deviceID" placeholder="Enter Device ID" name="deviceID"><br>
 
                   <div>
@@ -91,6 +109,7 @@
       <div id="navpanel" class="tab-content"></div>
     </div>
   </div>
+
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

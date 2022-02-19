@@ -32,6 +32,7 @@ $("#addDevice").on("click", function () {
         alert('Please enter all fields');
         return false;
     }
+    $(deviceName).html("Select Device");
     deviceName.value = "";
     deviceID.value = "";
     $('input[name="deviceStatus"]').prop('checked', false);
@@ -130,7 +131,7 @@ function addNewBedToHTML(data, currDisplay, idx) {
         if (devicesData[j].deviceStatus === "active") dd3.addClass("badge bg-success");
         else dd3.addClass("badge bg-danger");
 
-        if (devicesData[j].deviceName == "PM") {
+        if (devicesData[j].deviceName == "Patient Monitor") {
             var atag = $("<a>").appendTo(dd1)
                 .attr({ "href": "/carousel.html?deviceID=" + devicesData[j].deviceID + "&deviceName=" + devicesData[j].deviceName });
             $("<img>").attr({ "src": "assets/pm.jpg", "width": "400", "height": "300" }).appendTo(atag);
