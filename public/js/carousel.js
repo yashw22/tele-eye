@@ -1,5 +1,6 @@
 import { HOST, PORT } from "./config.js";
 
+
 var carouselBody = document.getElementById("carousel-inner");
 var carouselIndicators = document.getElementById("carousel-indicators");
 // var progBar = document.getElementById("carousel-progress-bar");
@@ -9,13 +10,22 @@ const deviceID = params.get("deviceID")
 $("#pageTitle").html(params.get("deviceName"));
 
 fetchData()
-setInterval(invokeEvery30Sec, 30000);
 
-async function invokeEvery30Sec() {
+var socket = io();
+socket.on('broadcast', function (data) {
+    console.log("testing");
     $(carouselBody).html("");
     $(carouselIndicators).html("");
     fetchData();
- }
+    // data.deviceNo
+});
+
+// setInterval(invokeEvery30Sec, 30000);
+// async function invokeEvery30Sec() {
+//     $(carouselBody).html("");
+//     $(carouselIndicators).html("");
+//     fetchData();
+// }
 
 function fetchData() {
     var ajaxData = {
@@ -35,14 +45,13 @@ function fetchData() {
 }
 
 function createCarousel(data) {
-    console.log(data);
+    // console.log(data);
 
     // aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:50%" 
     // $("#carousel-progBar").css("width", "50%").attr({ "aria-valuenow": "70" });
     // console.log(progressBar.style)
 
     for (var i = data.length - 1, j = 0; i >= 0; i--, j++) {
-        //console.log("Inside for lop. i = " + i);
         var imgDate = new Date(data[i].date);
         var dispDate = imgDate.getDate() + "/" + imgDate.getMonth() + "/" +
             imgDate.getFullYear() + " " + imgDate.getHours() + ":" +

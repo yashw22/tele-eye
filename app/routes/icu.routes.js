@@ -1,4 +1,4 @@
-const controller = require("../controllers/hospital.controller");
+const controller = require("../controllers/icu.controller");
 const { authJwt } = require("../middlewares");
 
 module.exports = function (app) {
@@ -7,6 +7,6 @@ module.exports = function (app) {
     //     next();
     // });
 
-    app.get("/hospital/gethospitals", [authJwt.verifyToken], controller.getHospitals);
-    app.post("/hospital/addhospital", [authJwt.verifyToken], controller.addHospital);
+    app.get("/icu/geticus", [authJwt.verifyToken], controller.getICUs);
+    app.post("/icu/addicu", [authJwt.verifyToken], controller.addICU);
 }

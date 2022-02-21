@@ -12,7 +12,7 @@ verifyToken = (req, res, next) => {
     }
 
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-        if (err) return res.status(401).send({ message: "Unauthorized!" });
+        if (err) return res.status(401).send({ message: "Unauthorized! Wrong password." });
         req.userId = decoded.id;
         next();
     });

@@ -29,7 +29,9 @@ exports.esp32Upload = (req, res) => {
         });
         pm.save((err, pm_res) => {
             if (err) { res.status(500).send({ message: err }); return; }
-            console.log("Image uploaded from esp32 - " + req.deviceNo + ". Path: " + uploadPath);
+            console.log("Image uploaded from esp32-" + req.deviceNo + ". Path: " + uploadPath);
+
+            req.io.sockets.emit('broadcast', { deviceID: pm_res.deviceID });
             res.status(200).send("Image uploaded. Path: " + uploadPath);
         });
     });

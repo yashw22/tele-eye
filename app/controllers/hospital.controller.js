@@ -16,10 +16,28 @@ exports.addHospital = (req, res) => {
 };
 
 exports.getHospitals = (req, res) => {
-    Hospital.find({})
+    Hospital.aggregate([
+        {
+            $lookup: {
+                from: "icus", // collection name in db
+                localField: "_id",
+                foreignField: "hospID",
+                as: "allICUs"
+            }
+        },
+        {
+            $lookup: {
+                from: "beds", // collection name in db
+                localField: "_id",
+                foreignField: "hospID",
+                as: "allBeds"
+            }
+        }
+    ])
         .exec(function (err, hospitals) {
             if (err) { res.status(500).send({ message: err }); return; }
             console.log("Hospitals List sent.");
+            //console.log(hospitals);
             res.status(200).send(hospitals);
         });
 }

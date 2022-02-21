@@ -8,8 +8,12 @@ const { authJwt } = require("./app/middlewares");
 const fileUpload = require('express-fileupload');
 
 const app = express();
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 app.use(express.static(path.resolve(__dirname, "public")));
-app.use(cors({ origin: "http://localhost:8080" }));
+app.use(cors({ origin: "http://localhost:8081" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -40,10 +44,27 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
 
+
+app.use(function (req, res, next) {
+    let origin = req.get('origin');
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PATCH,OPTIONS,PUT');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, access-key, Authorization');
+    next();
+});
+
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+//     next();
+// });
+
+
 require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);
+require("./app/routes/icu.routes")(app);
 require("./app/routes/bed.routes")(app);
-require("./app/routes/device.routes")(app);
+require("./app/routes/device.routes")(app, io);
 
 /*
 app.all("*", (req, res) => {
@@ -53,6 +74,6 @@ app.all("*", (req, res) => {
 */
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

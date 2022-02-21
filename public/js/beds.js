@@ -1,25 +1,28 @@
 import { HOST, PORT } from "./config.js";
 
 const params = new URLSearchParams(window.location.search);
+$("#page_header").html(params.get("icuName") + " - Bed List");
+const icuID = params.get("icuID");
 const hospID = params.get("hospID");
-$("#page_header").html(params.get("hospName"));
 
-fetchdataJSON();
+fetchBedsData();
 
-var totalBeds;
 var bedName = document.getElementById("bedName");
 var bedStatus = document.getElementsByName("bedStatus");
 var devices = []
 
 var table = document.getElementById("tableval");
 var deviceName = document.getElementById("deviceName");
-var deviceID = document.getElementById("deviceID");
+var deviceIDtag = document.getElementById("deviceID");
 var deviceStatus = document.getElementsByName("deviceStatus");
+
+
+var totalBeds, devicesData;
 
 $("#addDevice").on("click", function () {
     var deviceData = {
         "deviceName": deviceName.value,
-        "deviceID": deviceID.value,
+        "deviceID": deviceIDtag.value,
         "deviceStatus": "",
     };
     for (let i = 0; i < deviceStatus.length; i++) {
@@ -28,13 +31,13 @@ $("#addDevice").on("click", function () {
             break;
         }
     }
-    if (deviceName.value === "" || deviceID.value === "" || deviceData.deviceStatus === "") {
+    if (deviceName.value === "" || deviceIDtag.value === "" || deviceData.deviceStatus === "") {
         alert('Please enter all fields');
         return false;
     }
     $(deviceName).html("Select Device");
     deviceName.value = "";
-    deviceID.value = "";
+    deviceIDtag.value = "";
     $('input[name="deviceStatus"]').prop('checked', false);
     devices.push(deviceData);
 
@@ -48,24 +51,16 @@ $("#addDevice").on("click", function () {
 $("#submitdata").on("click", function () {
     var bedData = {
         "bedName": bedName.value,
+        "icuID": icuID,
         "hospID": hospID,
         "devices": devices,
         "bedStatus": "",
     }
     for (let i = 0; i < bedStatus.length; i++) {
-        if (bedStatus[i].checked) {
-            bedData.bedStatus = bedStatus[i].value;
-            break;
-        }
+        if (bedStatus[i].checked) { bedData.bedStatus = bedStatus[i].value; break; }
     }
-    if (bedName.value === "" || bedData.bedStatus === "") {
-        alert("Please enter Bed details.");
-        return false;
-    }
-    else if (!devices.length) {
-        alert("No devices added. Enter atleast one device details.");
-        return false;
-    }
+    if (bedName.value === "" || bedData.bedStatus === "") { alert("Please enter Bed details."); return false; }
+    else if (!devices.length) { alert("No devices added. Enter atleast one device details."); return false; }
     else {
         $.ajax({
             type: 'POST',
@@ -79,8 +74,11 @@ $("#submitdata").on("click", function () {
                 devices = [];
                 table.innerHTML = " ";
                 $('#modal').modal('hide');
-                clearActiveNav();
-                addNewBedToHTML(bedData, true, totalBeds);
+
+                addBedtoHtml(bedData, totalBeds - 1);
+                displayNavPanel(bedData, totalBeds - 1);
+                //clearActiveNav();
+                //addNewBed(bedData, true, totalBeds);
             }
         });
     }
@@ -95,57 +93,129 @@ $("#signoutbtn").on("click", function (event) {
     });
 });
 
-function fetchdataJSON() {
-    const response = fetch(HOST + ":" + PORT + "/bed/getbeds?hospID=" + hospID)
+
+function fetchBedsData() {
+    fetch(HOST + ":" + PORT + "/bed/getbeds?icuID=" + icuID)
         .then(response => response.json())
         .then(data => {
             totalBeds = data.length;
             for (var i = 0; i < totalBeds; i++) {
-                if (i == 0) addNewBedToHTML(data[i], true, i + 1);
-                else addNewBedToHTML(data[i], false, i + 1);
+                addBedtoHtml(data[i], i);
             }
+            if (totalBeds) displayNavPanel(data[0], 0);
         })
 }
 
-function addNewBedToHTML(data, currDisplay, idx) {
-    var act1 = "", act2 = "";
-    if (currDisplay) { act1 = "active"; act2 = "show active"; }
+function addBedtoHtml(data, i) {
     var btn = $("<button>")
-        .addClass("nav-link " + act1)
-        .attr({ "id": "url-tab-" + idx, "data-bs-toggle": "pill", "data-bs-target": "#url-" + idx, "type": "button", "role": "tab", "aria-controls": "url-" + idx, "aria-selected": "true" })
-        .html(data.bedName)
+        .addClass("nav-link").html(data.bedName).attr({ "id": "url-tab-" + i, "data-bs-toggle": "pill", "type": "button", "role": "tab", "aria-selected": "true" })
+        .click(function () { displayNavPanel(data, i); })
         .appendTo("#navbar");
-    // $("<h6>").html(data.bedStatus).appendTo("#navbar");
+    if (i == 0) btn.addClass("active");
+}
 
-    var devicesData = data.devices;
-    var disp = $("<div>")
-        .addClass("tab-pane fade " + act2)
-        .attr({ "id": "url-" + idx, "role": "tabpanel", "aria-labelledby": "url-tab-" + idx })
-        .appendTo("#navpanel");
+function displayNavPanel(data, idx) {
+    document.getElementById("navpanel").innerHTML = "";
+    var navbarList = document.getElementsByClassName("nav-link");
+    for (var i = 0; i < totalBeds; i++) navbarList[i].classList.remove("active");
+    $(navbarList[idx]).addClass("active");
 
-    var dd0 = $("<div>").addClass("row").appendTo(disp);
+    devicesData = data.devices;
+    var dd0 = $("<div>").addClass("row").appendTo("#navpanel");
     for (var j = 0; j < devicesData.length; j++) {
         var dd1 = $("<div>").addClass("col-md-6").appendTo(dd0);
         var dd2 = $("<h4>").html(devicesData[j].deviceName + " ").appendTo(dd1);
-        var dd3 = $("<span>").html(devicesData[j].deviceStatus).appendTo(dd2);
+        var dd3 = $("<span>").html(devicesData[j].deviceStatus).appendTo(dd1);
         if (devicesData[j].deviceStatus === "active") dd3.addClass("badge bg-success");
         else dd3.addClass("badge bg-danger");
+        $("<br>").appendTo(dd1)
 
         if (devicesData[j].deviceName == "Patient Monitor") {
-            var atag = $("<a>").appendTo(dd1)
-                .attr({ "href": "/carousel.html?deviceID=" + devicesData[j].deviceID + "&deviceName=" + devicesData[j].deviceName });
-            $("<img>").attr({ "src": "assets/pm.jpg", "width": "400", "height": "300" }).appendTo(atag);
+            var div = $("<div>").addClass("container").appendTo(dd1);
+            createCarousel(div, devicesData[j].deviceID);
+            // fetchImages(div, devicesData[j].deviceID);
             continue;
         }
         $("<iframe>").attr({ "src": devicesData[j].deviceID, "width": "400", "height": "300" }).appendTo(dd1);
     }
 }
 
-function clearActiveNav() {
-    var navbar = document.getElementsByClassName("nav-link");
-    var navpanel = document.getElementsByClassName("tab-pane");
-    for (var i = 0; i < navbar.length; i++) {
-        navbar[i].classList.remove("active");
-        navpanel[i].classList.remove("active", "show");
+
+
+function createCarousel(div, deviceID) {
+    var d0 = $("<div>").addClass("carousel slide").attr({ "id": "carousel-" + deviceID, "data-interval": "false" }).appendTo(div);
+    var dd1 = $("<div>").addClass("carousel-indicators").attr({ "id": "carousel-indicators-" + deviceID }).appendTo(d0);
+    var dd2 = $("<div>").addClass("carousel-inner").attr({ "id": "carousel-inner-" + deviceID }).appendTo(d0);
+    var db1 = $("<button>").addClass("carousel-control-prev")
+        .attr({ "type": "button", "data-bs-target": "#carousel-" + deviceID, "data-bs-slide": "prev" })
+        .appendTo(d0);
+    $("<span>").addClass("carousel-control-prev-icon").attr({ "aria-hidden": "true" }).appendTo(db1);
+    var db2 = $("<button>").addClass("carousel-control-next")
+        .attr({ "type": "button", "data-bs-target": "#carousel-" + deviceID, "data-bs-slide": "next" })
+        .appendTo(d0);
+    $("<span>").addClass("carousel-control-next-icon").attr({ "aria-hidden": "true" }).appendTo(db2);
+
+    fetchImages(deviceID, dd1, dd2);
+    // displayImages(data, dd1, dd2);
+
+}
+
+function fetchImages(deviceID, dd1, dd2) {
+    var ajaxData = {
+        "deviceID": deviceID,
+        "date": new Date(),
+        "limit": 10
+    };
+    fetch(HOST + ":" + PORT + "/devices/pm/getimages", {
+        method: 'POST',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(ajaxData)
+    })
+        .then((res) => res.json())
+        .then((res) => {
+            if (res.length) displayImages(res, dd1, dd2);
+            else $("<div>").html("No image available.").appendTo(div);
+        });
+}
+
+function displayImages(data, carouselIndicators, carouselBody) {
+    var deviceID = data[0].deviceID;
+
+    //console.log(data);
+    for (var i = data.length - 1, j = 0; i >= 0; i--, j++) {
+        var imgDate = new Date(data[i].date);
+        var dispDate = imgDate.getDate() + "/" + imgDate.getMonth() + "/" +
+            imgDate.getFullYear() + " " + imgDate.getHours() + ":" +
+            imgDate.getMinutes() + ":" + imgDate.getSeconds();
+
+        var indicator = $("<button>")
+            .attr({ "type": "button", "data-bs-target": "#carousel-" + deviceID, "data-bs-slide-to": j, "aria-label": "Slide" + (j + 1) })
+            .appendTo(carouselIndicators);
+
+        var d1 = $("<div>").addClass("carousel-item").appendTo(carouselBody);
+        $("<img>").attr({ "src": data[i].directory }).width("100%").addClass("d-block w-100").appendTo(d1);
+        var d2 = $("<div>").addClass("carousel-caption d-none d-md-block").appendTo(d1);
+        $("<p>").html(dispDate).appendTo(d2);
+
+        if (i == 0) {
+            d1.addClass("active");
+            indicator.addClass("active").attr({ "aria-current": "true" });
+        }
     }
 }
+
+var socket = io();
+socket.on('broadcast', function (data) {
+    var deviceID = data.deviceID;
+
+    for (var i = 0; i < devicesData.length; i++) {
+        if (devicesData[i].deviceID === deviceID) {
+            console.log("update to ...");
+            var dd1 = document.getElementById("carousel-indicators-" + deviceID);
+            var dd2 = document.getElementById("carousel-inner-" + deviceID);
+            dd1.innerHTML = "";
+            dd2.innerHTML = "";
+            fetchImages(deviceID, dd1, dd2);
+        }
+    }
+});

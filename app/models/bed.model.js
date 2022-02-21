@@ -4,6 +4,10 @@ const Bed = mongoose.model(
     "Bed",
     new mongoose.Schema({
         bedName: String,
+        icuID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ICU"
+        },
         hospID: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Hospital"
