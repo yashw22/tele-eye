@@ -25,3 +25,21 @@ exports.getBeds = (req, res) => {
             res.status(200).send(beds);
         });
 }
+
+exports.deleteBed = (req, res) => {
+    Bed.deleteOne({ _id: req.body.bed_ID }).exec(function (err) {
+        if (err) { res.status(500).send({ message: err }); return; }
+        console.log("Bed deleted.");
+        res.status(200).send("Bed deleted");
+    });
+};
+
+exports.deleteDevice = (req, res) => {
+    Bed.updateOne({ _id: req.body.bed_ID },
+        { $pull: { devices: { _id: req.body.device_ID } } },
+        function (err, docs) {
+            if (err) { res.status(500).send({ message: err }); return; }
+            console.log("Device deleted.");
+            res.status(200).send("Device deleted");
+        });
+};

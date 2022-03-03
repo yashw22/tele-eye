@@ -42,7 +42,6 @@ $("#submitdata").on("click", function () {
     }
 
 });
-
 $("#signoutbtn").on("click", function (event) {
     event.preventDefault();
     $.ajax({
@@ -67,16 +66,28 @@ function fetchdataJSON() {
                 var d1 = $("<div>").addClass("col-sm-4").appendTo(dd);
                 var d2 = $("<div>").addClass("card h-100").appendTo(d1).attr("id", data[i]._id);
                 var d3 = $("<div>").addClass("text-center").appendTo(d2);
-                var d4 = $("<div>").addClass("card-body")
-                    .attr({ "data-icuid": data[i]._id, "data-icuname": data[i].icuName, "data-hospid": hospID })
-                    .click(function () {
-                        window.location.href = "beds.html?icuName=" + $(this).data("icuname") + "&icuID=" + $(this).data("icuid") + "&hospID=" + $(this).data("hospid");
-                    }).appendTo(d2);
                 $("<h3>").html(data[i].icuName).appendTo(d3);
+                var d4 = $("<div>").addClass("card-body").appendTo(d2);
                 $("<p>").html("<b>Status</b>: " + data[i].icuStatus).appendTo(d4);
                 $("<p>").html("<b>No. of Beds</b>: " + (data[i].allBeds).length).appendTo(d4);
-                // $("<a>").html("View Beds").addClass("btn btn-success btn-sm")
-                // .attr({ "href": "/beds.html?hospName=" + data[i].hospName + "&hospID=" + data[i]._id }).appendTo(d4);
+
+                var d5 = $("<div>").css("text-align", "right").appendTo(d4);
+                $("<button>").addClass("btn btn-primary").html("View Beds")
+                    .attr({ "data-icuid": data[i]._id, "data-icuname": data[i].icuName, "data-hospid": hospID })
+                    .click(function () { window.location.href = "beds.html?icuName=" + $(this).data("icuname") + "&icuID=" + $(this).data("icuid") + "&hospID=" + $(this).data("hospid"); })
+                    .appendTo(d5);
+                $("<span>").html(" ").appendTo(d5);
+                $("<button>").addClass("btn btn-danger").html("Delete ICU").attr({ "data-icuid": data[i]._id })
+                    .on("click", function () { deleteICUBtn($(this).data("icuid")); }).appendTo(d5);
+
             }
+            if (data.length == 0) $("#icusList").html("No ICU in " + params.get("hospName"));
         })
 }
+
+function deleteICUBtn(id) {
+    var icuData = { icu_ID: id, };
+    $.ajax({ type: 'DELETE', url: HOST + ":" + PORT + "/icu/deleteicu", data: icuData, dataType: "text" })
+        .done(function (resultData) { fetchdataJSON(); })
+        .fail(function (err) { alert("Unable to delete."); });
+};

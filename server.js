@@ -13,7 +13,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 app.use(express.static(path.resolve(__dirname, "public")));
-app.use(cors({ origin: "http://localhost:8081" }));
+app.use(cors({ origin: "http://192.168.0.106:8081" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -53,12 +53,6 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, access-key, Authorization');
     next();
 });
-
-// app.use(function (req, res, next) {
-//     res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
-//     next();
-// });
-
 
 require('./app/routes/auth.routes')(app);
 require("./app/routes/hospital.routes")(app);

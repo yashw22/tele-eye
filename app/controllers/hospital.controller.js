@@ -1,5 +1,7 @@
 const db = require("../models");
 const Hospital = db.hospital;
+const ICU = db.icu;
+const Bed = db.bed;
 
 
 exports.addHospital = (req, res) => {
@@ -40,4 +42,20 @@ exports.getHospitals = (req, res) => {
             //console.log(hospitals);
             res.status(200).send(hospitals);
         });
+}
+
+exports.deleteHospital = (req, res) => {
+    Bed.deleteMany({ hospID: req.body.hosp_ID }).exec(function (err) {
+        if (err) { res.status(500).send({ message: err }); return; }
+
+        ICU.deleteMany({ hospID: req.body.hosp_ID }).exec(function (err) {
+            if (err) { res.status(500).send({ message: err }); return; }
+
+            Hospital.deleteOne({ _id: req.body.hosp_ID }).exec(function (err) {
+                if (err) { res.status(500).send({ message: err }); return; }
+                console.log("Hospital deleted.");
+                res.status(200).send("Hospital deleted");
+            });
+        });
+    });
 }
